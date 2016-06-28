@@ -27,8 +27,19 @@ class SquareApp {
 		/// @brief pointer to the surface, set initially to NULL
 		SDL_Surface* screensurface = NULL;
 
+//		SDL_Surface* imagesurface = NULL;
+
 		/// @brief Holds an image
-		SDL_Surface* imagesurface = NULL;
+		SDL_Texture* imagetexture = NULL;
+
+		int imwidth = 0;
+		int imheight = 0;
+		Uint32 imform = 0;
+		int imacc = 0;
+		
+
+		/// @brief The renderer for the window
+		SDL_Renderer* renderer = NULL;
 
 		/// @brief For when a key is pressed down
 		///

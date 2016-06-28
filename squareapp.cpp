@@ -48,21 +48,31 @@ bool SquareApp::OnInit() {
 		return false;
 	}
 	screensurface = SDL_GetWindowSurface(window);
+	if ((renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED)) == NULL) {
+		std::cout << "Renderer could not be created! SDL error: " << SDL_GetError() << std::endl;
+		return false;
+	}
+	SDL_SetRenderDrawColor(renderer, redval, greenval, blueval, 0xFF);
 	SDL_Surface* loadedsurface = NULL;
 	if ((loadedsurface = IMG_Load("test2.png")) == NULL) {
 		std::cout << "Image could not be loaded! SDL error: " << SDL_GetError() << std::endl;
 		return false;
 	}
-	if ((imagesurface = SDL_ConvertSurface(loadedsurface, screensurface->format, 0)) == NULL) {
-		std::cout << "Image could not be optimised! SDL error: " << SDL_GetError() << std::endl;
+	if ((imagetexture = SDL_CreateTextureFromSurface(renderer, loadedsurface)) == NULL) {
+		std::cout << "Texture could not be created! SDL error: " << SDL_GetError() << std::endl;
 		return false;
 	}
+//	if ((imagesurface = SDL_ConvertSurface(loadedsurface, screensurface->format, 0)) == NULL) {
+//		std::cout << "Image could not be optimised! SDL error: " << SDL_GetError() << std::endl;
+//		return false;
+//	}
 	SDL_FreeSurface(loadedsurface);
 	loadedsurface = NULL;
-	posrect.x = (SCREEN_WIDTH - imagesurface->w) / 2;
-	posrect.y = (SCREEN_HEIGHT - imagesurface->h) / 2;
-	posrect.w = imagesurface->w;
-	posrect.h = imagesurface->h;
+	SDL_QueryTexture(imagetexture, &imform, &imacc, &imwidth, &imheight);
+	posrect.x = (SCREEN_WIDTH - imwidth) / 2;
+	posrect.y = (SCREEN_HEIGHT - imheight) / 2;
+	posrect.w = imwidth;
+	posrect.h = imheight;
 	distribution = new std::uniform_int_distribution<int>(-9,9);
 	return true;
 }
@@ -84,20 +94,13 @@ void SquareApp::OnLoop() {
 /// @brief Renderer
 void SquareApp::OnRender() {
 //	Uint32 rstart = SDL_GetTicks();
-	SDL_FillRect(screensurface, NULL, SDL_MapRGB(screensurface->format, redval, greenval, blueval));
-	SDL_BlitSurface(imagesurface, NULL, screensurface, &posrect);
-	SDL_UpdateWindowSurface(window);
+//	SDL_FillRect(screensurface, NULL, SDL_MapRGB(screensurface->format, redval, greenval, blueval));
+	SDL_RenderClear(renderer);
+	SDL_RenderCopy(renderer, imagetexture, NULL, NULL);
+	SDL_RenderPresent(renderer);
+//	SDL_BlitSurface(imagesurface, NULL, screensurface, &posrect);
+//	SDL_UpdateWindowSurface(window);
 //	std::cout << "Ticks spent rendering: " << SDL_GetTicks() - rstart << std::endl;
-}
-
-/// @brief Close window etc
-void SquareApp::OnCleanup() {
-	SDL_FreeSurface(imagesurface);
-	imagesurface = NULL;
-	SDL_DestroyWindow(window);
-	SDL_Quit();
-	delete distribution;
-	assert(running == false);
 }
 
 /// @brief Handle events
@@ -146,4 +149,20 @@ void SquareApp::KeyPress(SDL_Keysym keyp) {
 		default:
 			break;
 	}
+}
+
+/// @brief Close window etc
+void SquareApp::OnCleanup() {
+//	SDL_FreeSurface(imagesurface);
+//	imagesurface = NULL;
+	SDL_DestroyTexture(imagetexture);
+	imagetexture = NULL;
+//	SDL_DestroyWindow(window);
+//	SDL_DestroyRenderer(renderer);
+//	renderer = NULL;
+//	window = NULL;
+	IMG_Quit();
+	SDL_Quit();
+	delete distribution;
+	assert(running == false);
 }
