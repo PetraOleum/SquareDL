@@ -49,8 +49,11 @@ bool SquareApp::OnInit() {
 		return false;
 	}
 	if ((imagesurface = SDL_ConvertSurface(loadedsurface, screensurface->format, 0)) == NULL) {
-			std::cout << "Image could not be optimised! SDL error " << SDL_GetError() << std::endl;
+		std::cout << "Image could not be optimised! SDL error " << SDL_GetError() << std::endl;
+		return false;
 	}
+	SDL_FreeSurface(loadedsurface);
+	loadedsurface = NULL;
 	posrect.x = (SCREEN_WIDTH - imagesurface->w) / 2;
 	posrect.y = (SCREEN_HEIGHT - imagesurface->h) / 2;
 	posrect.w = imagesurface->w;

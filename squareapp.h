@@ -14,8 +14,10 @@ class SquareApp {
 		/// @brief True if running - if set to false, will quit at end of next loop
 		bool running;
 
+		/// @brief Random number generator
 		std::default_random_engine generator;
 
+		/// @brief Pointer to random number distribution
 		std::uniform_int_distribution<int>* distribution = NULL;
 
 		/// @brief pointer to the window, set initially to NULL
@@ -41,6 +43,7 @@ class SquareApp {
 		/// @brief Green part of background colour
 		int greenval = 0xFF;
 
+		/// @brief Position of image
 		SDL_Rect posrect;
 
 	public:
