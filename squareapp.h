@@ -9,6 +9,9 @@
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
+#define IM_WIDTH 100
+#define IM_HEIGHT 100
+
 /// @brief Application class
 class SquareApp {
 	private:
@@ -32,10 +35,10 @@ class SquareApp {
 		/// @brief Holds an image
 		SDL_Texture* imagetexture = NULL;
 
-		int imwidth = 0;
-		int imheight = 0;
-		Uint32 imform = 0;
-		int imacc = 0;
+//		int imwidth = 0;
+//		int imheight = 0;
+//		Uint32 imform = 0;
+//		int imacc = 0;
 		
 
 		/// @brief The renderer for the window

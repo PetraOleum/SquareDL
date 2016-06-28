@@ -52,7 +52,7 @@ bool SquareApp::OnInit() {
 		std::cout << "Renderer could not be created! SDL error: " << SDL_GetError() << std::endl;
 		return false;
 	}
-	SDL_SetRenderDrawColor(renderer, redval, greenval, blueval, 0xFF);
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_Surface* loadedsurface = NULL;
 	if ((loadedsurface = IMG_Load("test2.png")) == NULL) {
 		std::cout << "Image could not be loaded! SDL error: " << SDL_GetError() << std::endl;
@@ -68,11 +68,11 @@ bool SquareApp::OnInit() {
 //	}
 	SDL_FreeSurface(loadedsurface);
 	loadedsurface = NULL;
-	SDL_QueryTexture(imagetexture, &imform, &imacc, &imwidth, &imheight);
-	posrect.x = (SCREEN_WIDTH - imwidth) / 2;
-	posrect.y = (SCREEN_HEIGHT - imheight) / 2;
-	posrect.w = imwidth;
-	posrect.h = imheight;
+//	SDL_QueryTexture(imagetexture, &imform, &imacc, &imwidth, &imheight);
+	posrect.x = (SCREEN_WIDTH - IM_WIDTH) / 2;
+	posrect.y = (SCREEN_HEIGHT - IM_HEIGHT) / 2;
+	posrect.w = IM_WIDTH;
+	posrect.h = IM_HEIGHT;
 	distribution = new std::uniform_int_distribution<int>(-9,9);
 	return true;
 }
@@ -96,7 +96,7 @@ void SquareApp::OnRender() {
 //	Uint32 rstart = SDL_GetTicks();
 //	SDL_FillRect(screensurface, NULL, SDL_MapRGB(screensurface->format, redval, greenval, blueval));
 	SDL_RenderClear(renderer);
-	SDL_RenderCopy(renderer, imagetexture, NULL, NULL);
+	SDL_RenderCopy(renderer, imagetexture, NULL, &posrect);
 	SDL_RenderPresent(renderer);
 //	SDL_BlitSurface(imagesurface, NULL, screensurface, &posrect);
 //	SDL_UpdateWindowSurface(window);
@@ -153,16 +153,18 @@ void SquareApp::KeyPress(SDL_Keysym keyp) {
 
 /// @brief Close window etc
 void SquareApp::OnCleanup() {
+	std::cout << "Quitting (nb may segfault)." << std::endl;
 //	SDL_FreeSurface(imagesurface);
 //	imagesurface = NULL;
 	SDL_DestroyTexture(imagetexture);
 	imagetexture = NULL;
-//	SDL_DestroyWindow(window);
-//	SDL_DestroyRenderer(renderer);
-//	renderer = NULL;
-//	window = NULL;
+	SDL_DestroyWindow(window);
+	SDL_DestroyRenderer(renderer);
+	renderer = NULL;
+	window = NULL;
 	IMG_Quit();
 	SDL_Quit();
 	delete distribution;
 	assert(running == false);
+	std::cout << "Did not segfault (this time)." << std::endl;
 }
