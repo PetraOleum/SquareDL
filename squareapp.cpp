@@ -1,5 +1,6 @@
 #include "squareapp.h"
 #include <iostream>
+#include <cassert>
 
 /// @brief Constructor - currently only sets running to true
 SquareApp::SquareApp() {
@@ -42,21 +43,40 @@ bool SquareApp::OnInit() {
 		return false;
 	}
 	screensurface = SDL_GetWindowSurface(window);
-	if ((imagesurface = SDL_LoadBMP("test.bmp")) == NULL) {
+	SDL_Surface* loadedsurface = NULL;
+	if ((loadedsurface = SDL_LoadBMP("test.bmp")) == NULL) {
 		std::cout << "Image could not be loaded! SDL error " << SDL_GetError() << std::endl;
 		return false;
 	}
+	if ((imagesurface = SDL_ConvertSurface(loadedsurface, screensurface->format, 0)) == NULL) {
+			std::cout << "Image could not be optimised! SDL error " << SDL_GetError() << std::endl;
+	}
+	posrect.x = (SCREEN_WIDTH - imagesurface->w) / 2;
+	posrect.y = (SCREEN_HEIGHT - imagesurface->h) / 2;
+	posrect.w = imagesurface->w;
+	posrect.h = imagesurface->h;
+	distribution = new std::uniform_int_distribution<int>(-9,9);
 	return true;
 }
 
+/// @brief Code for action during loop (empty)
 void SquareApp::OnLoop() {
-
+	posrect.y += (*distribution)(generator);
+	posrect.x += (*distribution)(generator);
+	if (posrect.y < 0)
+		posrect.y = 0;
+	if (posrect.y + posrect.h > SCREEN_HEIGHT)
+		posrect.y = SCREEN_HEIGHT - posrect.h;
+	if (posrect.x < 0)
+		posrect.x = 0;
+	if (posrect.x + posrect.w > SCREEN_WIDTH)
+		posrect.x = SCREEN_WIDTH - posrect.w;
 }
 
 /// @brief Renderer
 void SquareApp::OnRender() {
 	SDL_FillRect(screensurface, NULL, SDL_MapRGB(screensurface->format, redval, greenval, blueval));
-	SDL_BlitSurface(imagesurface, NULL, screensurface, NULL);
+	SDL_BlitSurface(imagesurface, NULL, screensurface, &posrect);
 	SDL_UpdateWindowSurface(window);
 }
 
@@ -66,6 +86,8 @@ void SquareApp::OnCleanup() {
 	imagesurface = NULL;
 	SDL_DestroyWindow(window);
 	SDL_Quit();
+	delete distribution;
+	assert(running == false);
 }
 
 /// @brief Handle events
