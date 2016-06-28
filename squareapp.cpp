@@ -34,22 +34,27 @@ int SquareApp::OnExecute() {
 /// @return success or fail
 bool SquareApp::OnInit() {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		std::cout << "Error in initialising! SDL error " << SDL_GetError() << std::endl;
+		std::cout << "Error in initialising! SDL error: " << SDL_GetError() << std::endl;
+		return false;
+	}
+	int imgFlags = IMG_INIT_PNG;
+	if (!(IMG_Init(imgFlags) & imgFlags)) {
+		std::cout << "SDL image library could not be initialised! SDL_Image error: " << IMG_GetError() << std::endl;
 		return false;
 	}
 	window = SDL_CreateWindow("SDL test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == NULL) {
-		std::cout << "Window could not be created! SDL error " << SDL_GetError() << std::endl;
+		std::cout << "Window could not be created! SDL error: " << SDL_GetError() << std::endl;
 		return false;
 	}
 	screensurface = SDL_GetWindowSurface(window);
 	SDL_Surface* loadedsurface = NULL;
-	if ((loadedsurface = SDL_LoadBMP("test.bmp")) == NULL) {
-		std::cout << "Image could not be loaded! SDL error " << SDL_GetError() << std::endl;
+	if ((loadedsurface = IMG_Load("test2.png")) == NULL) {
+		std::cout << "Image could not be loaded! SDL error: " << SDL_GetError() << std::endl;
 		return false;
 	}
 	if ((imagesurface = SDL_ConvertSurface(loadedsurface, screensurface->format, 0)) == NULL) {
-		std::cout << "Image could not be optimised! SDL error " << SDL_GetError() << std::endl;
+		std::cout << "Image could not be optimised! SDL error: " << SDL_GetError() << std::endl;
 		return false;
 	}
 	SDL_FreeSurface(loadedsurface);
@@ -62,7 +67,7 @@ bool SquareApp::OnInit() {
 	return true;
 }
 
-/// @brief Code for action during loop (empty)
+/// @brief Code for action during loop
 void SquareApp::OnLoop() {
 	posrect.y += (*distribution)(generator);
 	posrect.x += (*distribution)(generator);
@@ -78,9 +83,11 @@ void SquareApp::OnLoop() {
 
 /// @brief Renderer
 void SquareApp::OnRender() {
+//	Uint32 rstart = SDL_GetTicks();
 	SDL_FillRect(screensurface, NULL, SDL_MapRGB(screensurface->format, redval, greenval, blueval));
 	SDL_BlitSurface(imagesurface, NULL, screensurface, &posrect);
 	SDL_UpdateWindowSurface(window);
+//	std::cout << "Ticks spent rendering: " << SDL_GetTicks() - rstart << std::endl;
 }
 
 /// @brief Close window etc
