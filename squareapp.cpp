@@ -1,10 +1,14 @@
 #include "squareapp.h"
 #include <iostream>
 
+/// @brief Constructor - currently only sets running to true
 SquareApp::SquareApp() {
 	running = true;
 }
 
+/// @brief Execute the program, start to finish
+///
+/// @return Exit status
 int SquareApp::OnExecute() {
 	if (OnInit() == false)
 		return -1;
@@ -23,6 +27,9 @@ int SquareApp::OnExecute() {
 	return 0;
 }
 
+/// @brief Initialise window
+///
+/// @return success or fail
 bool SquareApp::OnInit() {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		std::cout << "Error in initialising! SDL error " << SDL_GetError() << std::endl;
@@ -49,11 +56,15 @@ void SquareApp::OnRender() {
 
 }
 
+/// @brief Close window etc
 void SquareApp::OnCleanup() {
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 }
 
+/// @brief Handle events
+///
+/// @param Event Pointer to event
 void SquareApp::OnEvent(SDL_Event* Event) {
 	std::cout << Event->type << std::endl;
 	if (Event->type == SDL_QUIT) {

@@ -1,6 +1,6 @@
 CC=g++
 LIBS=-lSDL2main -lSDL2
-CFLAGS=-Wall -Wextra -Werror -std=c++11 -x c++ $(LIBS)
+CFLAGS=-Wall -Wextra -Werror -std=c++11
 DEPS=squareapp.h
 OBJ=main.o squareapp.o
 
@@ -8,10 +8,10 @@ all: squaredl
 
 
 %.o: %.cpp $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) $(CFLAGS) -c -o $@ $< 
 
 squaredl: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 .PHONY: clean
 

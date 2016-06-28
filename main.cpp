@@ -1,6 +1,12 @@
 #include "squareapp.h"
 #include <iostream>
 
+/// @brief main function: enumerate args, launch app (closes before control returns
+///
+/// @param argc arg count
+/// @param argv[] args
+///
+/// @return execution status
 int main( int argc, char* argv[]) {
 	SquareApp theApp;
 
