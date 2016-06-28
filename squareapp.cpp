@@ -20,6 +20,7 @@ int SquareApp::OnExecute() {
 			OnEvent(&event);
 		OnLoop();
 		OnRender();
+		SDL_Delay(200);
 	}
 
 	OnCleanup();
@@ -41,10 +42,10 @@ bool SquareApp::OnInit() {
 		return false;
 	}
 	screensurface = SDL_GetWindowSurface(window);
-	SDL_FillRect(screensurface, NULL, SDL_MapRGB(screensurface->format, 0xFF, 0xFF, 0xFF));
-	SDL_UpdateWindowSurface(window);
-
-//	SDL_Delay(2000);
+	if ((imagesurface = SDL_LoadBMP("test.bmp")) == NULL) {
+		std::cout << "Image could not be loaded! SDL error " << SDL_GetError() << std::endl;
+		return false;
+	}
 	return true;
 }
 
@@ -52,12 +53,17 @@ void SquareApp::OnLoop() {
 
 }
 
+/// @brief Renderer
 void SquareApp::OnRender() {
-
+	SDL_FillRect(screensurface, NULL, SDL_MapRGB(screensurface->format, redval, greenval, blueval));
+	SDL_BlitSurface(imagesurface, NULL, screensurface, NULL);
+	SDL_UpdateWindowSurface(window);
 }
 
 /// @brief Close window etc
 void SquareApp::OnCleanup() {
+	SDL_FreeSurface(imagesurface);
+	imagesurface = NULL;
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 }
@@ -66,9 +72,46 @@ void SquareApp::OnCleanup() {
 ///
 /// @param Event Pointer to event
 void SquareApp::OnEvent(SDL_Event* Event) {
-	std::cout << Event->type << std::endl;
-	if (Event->type == SDL_QUIT) {
-		std::cout << "Quitting!" << std::endl;
-		running = false;
+	switch (Event->type) {
+		case SDL_QUIT:
+			std::cout << "Quitting!" << std::endl;
+			running = false;
+			break;
+		case 1024:
+			break;
+		case SDL_KEYDOWN:
+			KeyPress(Event->key.keysym);
+			break;
+		default:
+			std::cout << Event->type << std::endl;
+			break;
+	}
+}
+
+void SquareApp::KeyPress(SDL_Keysym keyp) {
+	switch (keyp.sym) {
+		case SDLK_b:
+			if (keyp.mod & KMOD_SHIFT)
+				blueval = 0xFF;
+			else
+				blueval = 0;
+			break;
+		case SDLK_r:
+			if (keyp.mod & KMOD_SHIFT)
+				redval = 0xFF;
+			else
+				redval = 0;
+			break;
+		case SDLK_g:
+			if (keyp.mod & KMOD_SHIFT)
+				greenval = 0xFF;
+			else
+				greenval = 0;
+			break;
+		case SDLK_q:
+			running = false;
+			break;
+		default:
+			break;
 	}
 }

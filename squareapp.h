@@ -18,6 +18,18 @@ class SquareApp {
 		/// @brief pointer to the surface, set initially to NULL
 		SDL_Surface* screensurface = NULL;
 
+		/// @brief Holds an image
+		SDL_Surface* imagesurface = NULL;
+
+		/// @brief For when a key is pressed down
+		///
+		/// @param keyp representation of the key
+		void KeyPress(SDL_Keysym keyp);
+
+		int blueval = 0xFF;
+		int redval = 0xFF;
+		int greenval = 0xFF;
+
 	public:
 		SquareApp();
 
