@@ -7,8 +7,8 @@
 #include <random>
 #include "board.h"
 
-#define SCREEN_WIDTH 500
-#define SCREEN_HEIGHT 500
+#define SCREEN_WIDTH 520
+#define SCREEN_HEIGHT 520
 
 #define IM_WIDTH 100
 #define IM_HEIGHT 100
@@ -37,10 +37,10 @@ class SquareApp {
 		int mdsy = 0;
 
 		/// @brief x-offset value for where the board is rel to the screen
-		int xOffset = 0;
+		int xOffset = 10;
 
 		/// @brief y-offset value for board vs screen
-		int yOffset = 0;
+		int yOffset = 10;
 
 		/// @brief Random number generator
 		std::mt19937 generator;
