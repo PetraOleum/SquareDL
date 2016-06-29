@@ -5,12 +5,18 @@
 #include <SDL2/SDL_image.h>
 
 #include <random>
+#include "board.h"
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
 #define IM_WIDTH 100
 #define IM_HEIGHT 100
+
+#define LOOP_TIME 200
+
+#define LINE_WIDTH 100
+#define LINE_HEIGHT 10
 
 /// @brief Application class
 class SquareApp {
@@ -22,7 +28,11 @@ class SquareApp {
 		std::default_random_engine generator;
 
 		/// @brief Pointer to random number distribution
-		std::uniform_int_distribution<int>* distribution = NULL;
+		std::uniform_int_distribution<int> xDistribution;
+
+		std::uniform_int_distribution<int> yDistribution;
+
+		std::uniform_int_distribution<int> horverDistribution;
 
 		/// @brief pointer to the window, set initially to NULL
 		SDL_Window* window = NULL;
@@ -31,15 +41,6 @@ class SquareApp {
 		SDL_Surface* screensurface = NULL;
 
 //		SDL_Surface* imagesurface = NULL;
-
-		/// @brief Holds an image
-		SDL_Texture* imagetexture = NULL;
-
-//		int imwidth = 0;
-//		int imheight = 0;
-//		Uint32 imform = 0;
-//		int imacc = 0;
-		
 
 		/// @brief The renderer for the window
 		SDL_Renderer* renderer = NULL;
@@ -50,16 +51,21 @@ class SquareApp {
 		void KeyPress(SDL_Keysym keyp);
 
 		/// @brief Blue part of background colour
-		int blueval = 0xFF;
+		int blueval = 0x00;
 
 		/// @brief Red part of background colour
-		int redval = 0xFF;
+		int redval = 0x00;
 
 		/// @brief Green part of background colour
-		int greenval = 0xFF;
+		int greenval = 0x00;
 
-		/// @brief Position of image
-		SDL_Rect posrect;
+		/// @brief The current board
+		Board currentPosition;
+
+		/// @brief Propose a move (computer player)
+		///
+		/// @return Proposed move
+		Move proposeMove();
 
 	public:
 		SquareApp();

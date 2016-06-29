@@ -17,11 +17,14 @@ int SquareApp::OnExecute() {
 	SDL_Event event;
 
 	while (running) {
+		Uint32 lstart = SDL_GetTicks();
 		while (SDL_PollEvent(&event))
 			OnEvent(&event);
 		OnLoop();
 		OnRender();
-		SDL_Delay(200);
+		Uint32 lend = SDL_GetTicks();
+		if ((lend - lstart) < LOOP_TIME)
+			SDL_Delay(LOOP_TIME - (lend - lstart));
 	}
 
 	OnCleanup();
@@ -33,6 +36,7 @@ int SquareApp::OnExecute() {
 ///
 /// @return success or fail
 bool SquareApp::OnInit() {
+	currentPosition = Board();
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		std::cout << "Error in initialising! SDL error: " << SDL_GetError() << std::endl;
 		return false;
@@ -52,55 +56,26 @@ bool SquareApp::OnInit() {
 		std::cout << "Renderer could not be created! SDL error: " << SDL_GetError() << std::endl;
 		return false;
 	}
-	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-	SDL_Surface* loadedsurface = NULL;
-	if ((loadedsurface = IMG_Load("test2.png")) == NULL) {
-		std::cout << "Image could not be loaded! SDL error: " << SDL_GetError() << std::endl;
-		return false;
-	}
-	if ((imagetexture = SDL_CreateTextureFromSurface(renderer, loadedsurface)) == NULL) {
-		std::cout << "Texture could not be created! SDL error: " << SDL_GetError() << std::endl;
-		return false;
-	}
-//	if ((imagesurface = SDL_ConvertSurface(loadedsurface, screensurface->format, 0)) == NULL) {
-//		std::cout << "Image could not be optimised! SDL error: " << SDL_GetError() << std::endl;
-//		return false;
-//	}
-	SDL_FreeSurface(loadedsurface);
-	loadedsurface = NULL;
-//	SDL_QueryTexture(imagetexture, &imform, &imacc, &imwidth, &imheight);
-	posrect.x = (SCREEN_WIDTH - IM_WIDTH) / 2;
-	posrect.y = (SCREEN_HEIGHT - IM_HEIGHT) / 2;
-	posrect.w = IM_WIDTH;
-	posrect.h = IM_HEIGHT;
-	distribution = new std::uniform_int_distribution<int>(-9,9);
+	xDistribution = std::uniform_int_distribution<int>(0, SQUARES_X);
+	yDistribution = std::uniform_int_distribution<int>(0, SQUARES_Y);
+	horverDistribution = std::uniform_int_distribution<int>(0, 1);
 	return true;
 }
 
 /// @brief Code for action during loop
 void SquareApp::OnLoop() {
-	posrect.y += (*distribution)(generator);
-	posrect.x += (*distribution)(generator);
-	if (posrect.y < 0)
-		posrect.y = 0;
-	if (posrect.y + posrect.h > SCREEN_HEIGHT)
-		posrect.y = SCREEN_HEIGHT - posrect.h;
-	if (posrect.x < 0)
-		posrect.x = 0;
-	if (posrect.x + posrect.w > SCREEN_WIDTH)
-		posrect.x = SCREEN_WIDTH - posrect.w;
+	Move mv = proposeMove();
+	std::cout << (int)currentPosition.CurrentPlayer() << ": " << (int)mv.orientation << "; " << mv.x << "; " << mv.y << std::endl;
+	currentPosition = currentPosition.moveResult(mv);
+	std::cout << (int)currentPosition.CurrentPlayer() << std::endl;
+	std::cout << "Score: " << currentPosition.score(Player::ONE) << " / " << currentPosition.score(Player::TWO) << " (" << currentPosition.score(Player::NONE) << ")" << std::endl;
 }
 
 /// @brief Renderer
 void SquareApp::OnRender() {
-//	Uint32 rstart = SDL_GetTicks();
-//	SDL_FillRect(screensurface, NULL, SDL_MapRGB(screensurface->format, redval, greenval, blueval));
+	SDL_SetRenderDrawColor(renderer, redval, greenval, blueval, 0xFF);
 	SDL_RenderClear(renderer);
-	SDL_RenderCopy(renderer, imagetexture, NULL, &posrect);
 	SDL_RenderPresent(renderer);
-//	SDL_BlitSurface(imagesurface, NULL, screensurface, &posrect);
-//	SDL_UpdateWindowSurface(window);
-//	std::cout << "Ticks spent rendering: " << SDL_GetTicks() - rstart << std::endl;
 }
 
 /// @brief Handle events
@@ -156,15 +131,17 @@ void SquareApp::OnCleanup() {
 	std::cout << "Quitting (nb may segfault)." << std::endl;
 //	SDL_FreeSurface(imagesurface);
 //	imagesurface = NULL;
-	SDL_DestroyTexture(imagetexture);
-	imagetexture = NULL;
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	renderer = NULL;
 	window = NULL;
 	IMG_Quit();
 	SDL_Quit();
-	delete distribution;
 	assert(running == false);
 	std::cout << "Did not segfault (this time)." << std::endl;
+}
+
+Move SquareApp::proposeMove() {
+	Move mv = {(horverDistribution(generator) ? Orientation::HORIZONAL : Orientation::VERTICAL), xDistribution(generator), yDistribution(generator)};
+	return mv;
 }
