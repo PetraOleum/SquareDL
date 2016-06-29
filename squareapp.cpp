@@ -77,7 +77,7 @@ void SquareApp::OnRender() {
 	SDL_RenderClear(renderer);
 	for (int x = 0; x < SQUARES_X; x++)
 		for (int y = 0; y < SQUARES_Y; y++) {
-			SDL_Rect squareRect = {x * LINE_WIDTH, y * LINE_WIDTH, LINE_WIDTH, LINE_WIDTH};
+			SDL_Rect squareRect = {x * LINE_WIDTH + xOffset, y * LINE_WIDTH + yOffset, LINE_WIDTH, LINE_WIDTH};
 			Player op = currentPosition.squareState(x, y);
 			switch (op) {
 				case Player::ONE:
@@ -93,34 +93,96 @@ void SquareApp::OnRender() {
 		}
 	for (int x = 0; x < SQUARES_X; x++)
 		for (int y = 0; y <= SQUARES_Y; y++) {
-				SDL_Rect lrect = {x * LINE_WIDTH + LINE_HEIGHT / 2, y * LINE_WIDTH - LINE_HEIGHT / 2, LINE_WIDTH - LINE_HEIGHT, LINE_HEIGHT};
+				SDL_Rect lrect = {
+					x * LINE_WIDTH + LINE_HEIGHT / 2 + xOffset, 
+					y * LINE_WIDTH - LINE_HEIGHT / 2 + yOffset, 
+					LINE_WIDTH - LINE_HEIGHT, 
+					LINE_HEIGHT
+				};
 				if (currentPosition.horLineState(x, y)) {
 					SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0xFF, 0xFF);
 					SDL_RenderFillRect(renderer, &lrect);
-					filledTrigonRGBA(renderer, x * LINE_WIDTH, y * LINE_WIDTH, x * LINE_WIDTH + LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, x * LINE_WIDTH + LINE_HEIGHT / 2, y * LINE_WIDTH - LINE_HEIGHT / 2, 0xFF, 0x00, 0xFF, 0xFF);
-					filledTrigonRGBA(renderer, (x + 1) * LINE_WIDTH, y * LINE_WIDTH, (x + 1) * LINE_WIDTH - LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, (x + 1) * LINE_WIDTH - LINE_HEIGHT / 2, y * LINE_WIDTH - LINE_HEIGHT / 2, 0xFF, 0x00, 0xFF, 0xFF);
+					filledTrigonRGBA(renderer, x * LINE_WIDTH + xOffset, 
+							y * LINE_WIDTH + yOffset, 
+							x * LINE_WIDTH + LINE_HEIGHT / 2 + xOffset, 
+							y * LINE_WIDTH + LINE_HEIGHT / 2 + yOffset, 
+							x * LINE_WIDTH + LINE_HEIGHT / 2 + xOffset, 
+							y * LINE_WIDTH - LINE_HEIGHT / 2 + yOffset, 
+							0xFF, 0x00, 0xFF, 0xFF);
+
+					filledTrigonRGBA(renderer, (x + 1) * LINE_WIDTH + xOffset, 
+							y * LINE_WIDTH + yOffset, 
+							(x + 1) * LINE_WIDTH - LINE_HEIGHT / 2 + xOffset, 
+							y * LINE_WIDTH + LINE_HEIGHT / 2 + yOffset, 
+							(x + 1) * LINE_WIDTH - LINE_HEIGHT / 2 + xOffset, 
+							y * LINE_WIDTH - LINE_HEIGHT / 2 + yOffset, 
+							0xFF, 0x00, 0xFF, 0xFF);
 				}
 				else {
 					SDL_SetRenderDrawColor(renderer, 0x30, 0x30, 0x30, 0xFF);
 					SDL_RenderFillRect(renderer, &lrect);
-					filledTrigonRGBA(renderer, x * LINE_WIDTH, y * LINE_WIDTH, x * LINE_WIDTH + LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, x * LINE_WIDTH + LINE_HEIGHT / 2, y * LINE_WIDTH - LINE_HEIGHT / 2, 0x30, 0x30, 0x30, 0xFF);
-					filledTrigonRGBA(renderer, (x + 1) * LINE_WIDTH, y * LINE_WIDTH, (x + 1) * LINE_WIDTH - LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, (x + 1) * LINE_WIDTH - LINE_HEIGHT / 2, y * LINE_WIDTH - LINE_HEIGHT / 2, 0x30, 0x30, 0x30, 0xFF);
+					filledTrigonRGBA(renderer, x * LINE_WIDTH + xOffset, 
+							y * LINE_WIDTH + yOffset, 
+							x * LINE_WIDTH + LINE_HEIGHT / 2 + xOffset, 
+							y * LINE_WIDTH + LINE_HEIGHT / 2 + yOffset, 
+							x * LINE_WIDTH + LINE_HEIGHT / 2 + xOffset, 
+							y * LINE_WIDTH - LINE_HEIGHT / 2 + yOffset, 
+							0x30, 0x30, 0x30, 0xFF);
+
+					filledTrigonRGBA(renderer, (x + 1) * LINE_WIDTH + xOffset, 
+							y * LINE_WIDTH + yOffset, 
+							(x + 1) * LINE_WIDTH - LINE_HEIGHT / 2 + xOffset, 
+							y * LINE_WIDTH + LINE_HEIGHT / 2 + yOffset, 
+							(x + 1) * LINE_WIDTH - LINE_HEIGHT / 2 + xOffset, 
+							y * LINE_WIDTH - LINE_HEIGHT / 2 + yOffset, 
+							0x30, 0x30, 0x30, 0xFF);
 				}
 			}
 	for (int x = 0; x <= SQUARES_X; x++)
 		for (int y = 0; y < SQUARES_Y; y++) {
-				SDL_Rect lrect = {x * LINE_WIDTH - LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, LINE_HEIGHT, LINE_WIDTH - LINE_HEIGHT};
+				SDL_Rect lrect = {
+					x * LINE_WIDTH - LINE_HEIGHT / 2 + xOffset, 
+					y * LINE_WIDTH + LINE_HEIGHT / 2 + yOffset, 
+					LINE_HEIGHT, 
+					LINE_WIDTH - LINE_HEIGHT
+				};
 				if (currentPosition.verLineState(x, y)) {
 					SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0xFF, 0xFF);
 					SDL_RenderFillRect(renderer, &lrect);
-					filledTrigonRGBA(renderer, x * LINE_WIDTH, y * LINE_WIDTH, x * LINE_WIDTH + LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, x * LINE_WIDTH - LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, 0xFF, 0x00, 0xFF, 0xFF);
-					filledTrigonRGBA(renderer, x * LINE_WIDTH, (y + 1) * LINE_WIDTH, x * LINE_WIDTH + LINE_HEIGHT / 2, (y + 1) * LINE_WIDTH - LINE_HEIGHT / 2, x * LINE_WIDTH - LINE_HEIGHT / 2, (y + 1) * LINE_WIDTH - LINE_HEIGHT / 2, 0xFF, 0x00, 0xFF, 0xFF);
+					filledTrigonRGBA(renderer, x * LINE_WIDTH + xOffset, 
+							y * LINE_WIDTH + yOffset, 
+							x * LINE_WIDTH + LINE_HEIGHT / 2 + xOffset, 
+							y * LINE_WIDTH + LINE_HEIGHT / 2 + yOffset, 
+							x * LINE_WIDTH - LINE_HEIGHT / 2 + xOffset, 
+							y * LINE_WIDTH + LINE_HEIGHT / 2 + yOffset, 
+							0xFF, 0x00, 0xFF, 0xFF);
+
+					filledTrigonRGBA(renderer, x * LINE_WIDTH + xOffset, 
+							(y + 1) * LINE_WIDTH + yOffset, 
+							x * LINE_WIDTH + LINE_HEIGHT / 2 + xOffset, 
+							(y + 1) * LINE_WIDTH - LINE_HEIGHT / 2 + yOffset, 
+							x * LINE_WIDTH - LINE_HEIGHT / 2 + xOffset, 
+							(y + 1) * LINE_WIDTH - LINE_HEIGHT / 2 + yOffset, 
+							0xFF, 0x00, 0xFF, 0xFF);
 				}
 				else {
 					SDL_SetRenderDrawColor(renderer, 0x30, 0x30, 0x30, 0xFF);
 					SDL_RenderFillRect(renderer, &lrect);
-					filledTrigonRGBA(renderer, x * LINE_WIDTH, y * LINE_WIDTH, x * LINE_WIDTH + LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, x * LINE_WIDTH - LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, 0x30, 0x30, 0x30, 0xFF);
-					filledTrigonRGBA(renderer, x * LINE_WIDTH, (y + 1) * LINE_WIDTH, x * LINE_WIDTH + LINE_HEIGHT / 2, (y + 1) * LINE_WIDTH - LINE_HEIGHT / 2, x * LINE_WIDTH - LINE_HEIGHT / 2, (y + 1) * LINE_WIDTH - LINE_HEIGHT / 2, 0x30, 0x30, 0x30, 0xFF);
+					filledTrigonRGBA(renderer, x * LINE_WIDTH + xOffset, 
+							y * LINE_WIDTH + yOffset, 
+							x * LINE_WIDTH + LINE_HEIGHT / 2 + xOffset, 
+							y * LINE_WIDTH + LINE_HEIGHT / 2 + yOffset, 
+							x * LINE_WIDTH - LINE_HEIGHT / 2 + xOffset, 
+							y * LINE_WIDTH + LINE_HEIGHT / 2 + yOffset, 
+							0x30, 0x30, 0x30, 0xFF);
+
+					filledTrigonRGBA(renderer, x * LINE_WIDTH + xOffset, 
+							(y + 1) * LINE_WIDTH + yOffset, 
+							x * LINE_WIDTH + LINE_HEIGHT / 2 + xOffset, 
+							(y + 1) * LINE_WIDTH - LINE_HEIGHT / 2 + yOffset, 
+							x * LINE_WIDTH - LINE_HEIGHT / 2 + xOffset, 
+							(y + 1) * LINE_WIDTH - LINE_HEIGHT / 2 + yOffset, 
+							0x30, 0x30, 0x30, 0xFF);
 				}
 			}
 	SDL_RenderPresent(renderer);
@@ -135,17 +197,34 @@ void SquareApp::OnEvent(SDL_Event* Event) {
 			std::cout << "Quitting!" << std::endl;
 			running = false;
 			break;
-		case 1024:
-			break;
 		case SDL_KEYDOWN:
 			KeyPress(Event->key.keysym);
 			break;
+		case SDL_MOUSEBUTTONDOWN:
+			mouseDown = true;
+			mdsx = Event->button.x;
+			mdsy = Event->button.y;
+			break;
+		case SDL_MOUSEMOTION:
+			if (mouseDown) {
+				mouseDragging = true;
+				xOffset += (Event->motion.x - mdsx);
+				yOffset += (Event->motion.y - mdsy);
+				mdsx = Event->motion.x;
+				mdsy = Event->motion.y;
+			}
+			else {
+				mouseDragging = false;
+			}
+			break;
 		case SDL_MOUSEBUTTONUP:
-			if (currentPosition.CurrentPlayer() == Player::ONE) {
+			mouseDown = false;
+			if (currentPosition.CurrentPlayer() == Player::ONE && mouseDragging == false) {
 				Move mv = humanMove(Event);
 				std::cout << "Move: " << mv.x << "; " << mv.y << std::endl;
 				currentPosition = currentPosition.moveResult(mv);
 			}
+			mouseDragging = false;
 			break;
 		default:
 			std::cout << Event->type << std::endl;
@@ -199,15 +278,15 @@ Move SquareApp::proposeMove() {
 
 Move SquareApp::humanMove(SDL_Event* e) {
 	std::cout << "Clicked" << std::endl;
-	int dx = e->button.x % LINE_WIDTH;
-	int dy = e->button.y % LINE_WIDTH;
+	int dx = (e->button.x - xOffset) % LINE_WIDTH;
+	int dy = (e->button.y - yOffset) % LINE_WIDTH;
 //	if ((dy > LINE_HEIGHT / 2 && dy < LINE_WIDTH - LINE_HEIGHT / 2) || (dx > LINE_HEIGHT / 2 && dx < LINE_WIDTH - LINE_HEIGHT / 2))
 //		return {Orientation::HORIZONAL, -1, -1};
 	int dix = LINE_WIDTH - dx;
 	int diy = LINE_WIDTH - dy;
 	int min = std::min(std::min(std::min(dx, dy), dix), diy);
-	int sx = e->button.x / LINE_WIDTH;
-	int sy = e->button.y / LINE_WIDTH;
+	int sx = (e->button.x - xOffset) / LINE_WIDTH;
+	int sy = (e->button.y - yOffset) / LINE_WIDTH;
 	std::cout << e->button.x << "; " << dx << "; " << dix << "; " << sx << std::endl;
 	std::cout << min << std::endl;
 	if (min == dx)

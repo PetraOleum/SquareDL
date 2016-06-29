@@ -13,7 +13,7 @@
 #define IM_WIDTH 100
 #define IM_HEIGHT 100
 
-#define LOOP_TIME 200
+#define LOOP_TIME 50
 
 #define LINE_WIDTH 50
 #define LINE_HEIGHT 12
@@ -24,9 +24,28 @@ class SquareApp {
 		/// @brief True if running - if set to false, will quit at end of next loop
 		bool running;
 
+		/// @brief Is the mouse down?
+		bool mouseDown = false;
+
+		/// @brief Is the mouse dragging?
+		bool mouseDragging = false;
+
+		/// @brief Start x-coord of a mouse drag
+		int mdsx = 0;
+		
+		/// @brief Start y-coord of a mouse drag
+		int mdsy = 0;
+
+		/// @brief x-offset value for where the board is rel to the screen
+		int xOffset = 0;
+
+		/// @brief y-offset value for board vs screen
+		int yOffset = 0;
+
 		/// @brief Random number generator
 		std::mt19937 generator;
 
+		/// @brief Other part of random number generator
 		std::random_device rd;
 
 		/// @brief Pointer to random number distribution
