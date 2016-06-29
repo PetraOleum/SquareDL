@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cassert>
 #include <ctime>
+#include <algorithm>
 
 /// @brief Constructor - currently only sets running to true
 SquareApp::SquareApp() {
@@ -61,11 +62,13 @@ bool SquareApp::OnInit() {
 
 /// @brief Code for action during loop
 void SquareApp::OnLoop() {
-	Move mv = proposeMove();
-	std::cout << (int)currentPosition.CurrentPlayer() << ": " << (int)mv.orientation << "; " << mv.x << "; " << mv.y << std::endl;
-	currentPosition = currentPosition.moveResult(mv);
-	std::cout << "Score: " << currentPosition.score(Player::ONE) << " / " << currentPosition.score(Player::TWO) << " (" << currentPosition.score(Player::NONE) << ")" << std::endl;
-	std::cout << "Turn: " << currentPosition.turns() << std::endl;
+	while (currentPosition.CurrentPlayer() == Player::TWO && currentPosition.score(Player::NONE) > 0) {
+		Move mv = proposeMove();
+		std::cout << (int)currentPosition.CurrentPlayer() << ": " << (int)mv.orientation << "; " << mv.x << "; " << mv.y << std::endl;
+		currentPosition = currentPosition.moveResult(mv);
+		std::cout << "Score: " << currentPosition.score(Player::ONE) << " / " << currentPosition.score(Player::TWO) << " (" << currentPosition.score(Player::NONE) << ")" << std::endl;
+		std::cout << "Turn: " << currentPosition.turns() << std::endl;
+	}
 }
 
 /// @brief Renderer
@@ -137,6 +140,13 @@ void SquareApp::OnEvent(SDL_Event* Event) {
 		case SDL_KEYDOWN:
 			KeyPress(Event->key.keysym);
 			break;
+		case SDL_MOUSEBUTTONUP:
+			if (currentPosition.CurrentPlayer() == Player::ONE) {
+				Move mv = humanMove(Event);
+				std::cout << "Move: " << mv.x << "; " << mv.y << std::endl;
+				currentPosition = currentPosition.moveResult(mv);
+			}
+			break;
 		default:
 			std::cout << Event->type << std::endl;
 			break;
@@ -185,4 +195,29 @@ Move SquareApp::proposeMove() {
 		}
 	mv = {(horverDistribution(generator) ? Orientation::HORIZONAL : Orientation::VERTICAL), xDistribution(generator), yDistribution(generator)};
 	return mv;
+}
+
+Move SquareApp::humanMove(SDL_Event* e) {
+	std::cout << "Clicked" << std::endl;
+	int dx = e->button.x % LINE_WIDTH;
+	int dy = e->button.y % LINE_WIDTH;
+//	if ((dy > LINE_HEIGHT / 2 && dy < LINE_WIDTH - LINE_HEIGHT / 2) || (dx > LINE_HEIGHT / 2 && dx < LINE_WIDTH - LINE_HEIGHT / 2))
+//		return {Orientation::HORIZONAL, -1, -1};
+	int dix = LINE_WIDTH - dx;
+	int diy = LINE_WIDTH - dy;
+	int min = std::min(std::min(std::min(dx, dy), dix), diy);
+	int sx = e->button.x / LINE_WIDTH;
+	int sy = e->button.y / LINE_WIDTH;
+	std::cout << e->button.x << "; " << dx << "; " << dix << "; " << sx << std::endl;
+	std::cout << min << std::endl;
+	if (min == dx)
+		return {Orientation::VERTICAL, sx, sy};
+	else if (min == dy)
+		return {Orientation::HORIZONAL, sx, sy};
+	else if (min == dix)
+		return {Orientation::VERTICAL, sx + 1, sy};
+	else
+		return {Orientation::HORIZONAL, sx, sy + 1};
+
+
 }

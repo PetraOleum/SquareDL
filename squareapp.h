@@ -16,7 +16,7 @@
 #define LOOP_TIME 200
 
 #define LINE_WIDTH 50
-#define LINE_HEIGHT 8
+#define LINE_HEIGHT 12
 
 /// @brief Application class
 class SquareApp {
@@ -59,6 +59,13 @@ class SquareApp {
 		///
 		/// @return Proposed move
 		Move proposeMove();
+
+		/// @brief Turn a SDL_Event (specifically a click) into a move
+		///
+		/// @param e The event
+		///
+		/// @return A Move corresponding to the click
+		Move humanMove(SDL_Event* e);
 
 	public:
 		SquareApp();
