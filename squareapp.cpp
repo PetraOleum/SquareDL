@@ -1,9 +1,11 @@
 #include "squareapp.h"
 #include <iostream>
 #include <cassert>
+#include <ctime>
 
 /// @brief Constructor - currently only sets running to true
 SquareApp::SquareApp() {
+	generator = std::mt19937(rd());
 	running = true;
 }
 

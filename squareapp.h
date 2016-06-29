@@ -25,7 +25,9 @@ class SquareApp {
 		bool running;
 
 		/// @brief Random number generator
-		std::default_random_engine generator;
+		std::mt19937 generator;
+
+		std::random_device rd;
 
 		/// @brief Pointer to random number distribution
 		std::uniform_int_distribution<int> xDistribution;
