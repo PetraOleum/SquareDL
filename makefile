@@ -1,5 +1,5 @@
 CC=g++
-LIBS=-lSDL2 -lSDL2_image
+LIBS=-lSDL2 -lSDL2_gfx
 CFLAGS=-Wall -Wextra -Werror -std=c++11 -g
 DEPS=squareapp.h board.h
 OBJ=main.o squareapp.o board.o

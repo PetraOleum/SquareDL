@@ -2,21 +2,21 @@
 #define SQUAREAPP_H
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
 
 #include <random>
 #include "board.h"
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH 500
+#define SCREEN_HEIGHT 500
 
 #define IM_WIDTH 100
 #define IM_HEIGHT 100
 
 #define LOOP_TIME 200
 
-#define LINE_WIDTH 100
-#define LINE_HEIGHT 10
+#define LINE_WIDTH 50
+#define LINE_HEIGHT 8
 
 /// @brief Application class
 class SquareApp {
@@ -49,15 +49,6 @@ class SquareApp {
 		///
 		/// @param keyp representation of the key
 		void KeyPress(SDL_Keysym keyp);
-
-		/// @brief Blue part of background colour
-		int blueval = 0x00;
-
-		/// @brief Red part of background colour
-		int redval = 0x00;
-
-		/// @brief Green part of background colour
-		int greenval = 0x00;
 
 		/// @brief The current board
 		Board currentPosition;

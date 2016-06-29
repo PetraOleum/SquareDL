@@ -137,13 +137,13 @@ Board Board::moveResult(Move move) {
 			if (move.y > 0)
 				if (nb.horizontalLines[move.x][move.y - 1] && nb.verticalLines[move.x][move.y - 1] && nb.verticalLines[move.x + 1][move.y - 1]) {
 					nb.currentPlayer = currentPlayer;
-					std::cout << "Square Claimed" << std::endl;
+//					std::cout << "Square Claimed" << std::endl;
 					nb.squares[move.x][move.y - 1] = currentPlayer;
 				}
 			if (move.y < SQUARES_Y)
 				if (nb.horizontalLines[move.x][move.y + 1] && nb.verticalLines[move.x][move.y] && nb.verticalLines[move.x + 1][move.y]) {
 					nb.currentPlayer = currentPlayer;
-					std::cout << "Square Claimed" << std::endl;
+//					std::cout << "Square Claimed" << std::endl;
 					nb.squares[move.x][move.y] = currentPlayer;
 				}
 		} else {
@@ -156,20 +156,20 @@ Board Board::moveResult(Move move) {
 				if (nb.verticalLines[move.x - 1][move.y] && nb.horizontalLines[move.x - 1][move.y] && nb.horizontalLines[move.x - 1][move.y + 1]) {
 					nb.currentPlayer = currentPlayer;
 					nb.squares[move.x - 1][move.y] = currentPlayer;
-					std::cout << "Square Claimed" << std::endl;
+//					std::cout << "Square Claimed" << std::endl;
 				}
 			if (move.x < SQUARES_X)
 				if (nb.verticalLines[move.x + 1][move.y] && nb.horizontalLines[move.x][move.y] && nb.horizontalLines[move.x][move.y + 1]) {
 					nb.currentPlayer = currentPlayer;
-					std::cout << "Square Claimed" << std::endl;
+//					std::cout << "Square Claimed" << std::endl;
 					nb.squares[move.x][move.y] = currentPlayer;
 				}
 		}
 
 	} catch (std::out_of_range e) {
-		std::cout << e.what() << std::endl;
+//		std::cout << e.what() << std::endl;
 		return *this;
 	}
-	std::cout << (int)nb.currentPlayer - (int)currentPlayer << std::endl;
+//	std::cout << (int)nb.currentPlayer - (int)currentPlayer << std::endl;
 	return nb;
 }

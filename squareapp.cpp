@@ -41,11 +41,6 @@ bool SquareApp::OnInit() {
 		std::cout << "Error in initialising! SDL error: " << SDL_GetError() << std::endl;
 		return false;
 	}
-	int imgFlags = IMG_INIT_PNG;
-	if (!(IMG_Init(imgFlags) & imgFlags)) {
-		std::cout << "SDL image library could not be initialised! SDL_Image error: " << IMG_GetError() << std::endl;
-		return false;
-	}
 	window = SDL_CreateWindow("SDL test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (window == NULL) {
 		std::cout << "Window could not be created! SDL error: " << SDL_GetError() << std::endl;
@@ -73,8 +68,56 @@ void SquareApp::OnLoop() {
 
 /// @brief Renderer
 void SquareApp::OnRender() {
-	SDL_SetRenderDrawColor(renderer, redval, greenval, blueval, 0xFF);
+	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
 	SDL_RenderClear(renderer);
+	for (int x = 0; x < SQUARES_X; x++)
+		for (int y = 0; y < SQUARES_Y; y++) {
+			SDL_Rect squareRect = {x * LINE_WIDTH, y * LINE_WIDTH, LINE_WIDTH, LINE_WIDTH};
+			Player op = currentPosition.squareState(x, y);
+			switch (op) {
+				case Player::ONE:
+					SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, 0xFF);
+					break;
+				case Player::TWO:
+					SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+					break;
+				default:
+					SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
+			}
+			SDL_RenderFillRect(renderer, &squareRect);
+		}
+	for (int x = 0; x < SQUARES_X; x++)
+		for (int y = 0; y <= SQUARES_Y; y++) {
+				SDL_Rect lrect = {x * LINE_WIDTH + LINE_HEIGHT / 2, y * LINE_WIDTH - LINE_HEIGHT / 2, LINE_WIDTH - LINE_HEIGHT, LINE_HEIGHT};
+				if (currentPosition.horLineState(x, y)) {
+					SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0xFF, 0xFF);
+					SDL_RenderFillRect(renderer, &lrect);
+					filledTrigonRGBA(renderer, x * LINE_WIDTH, y * LINE_WIDTH, x * LINE_WIDTH + LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, x * LINE_WIDTH + LINE_HEIGHT / 2, y * LINE_WIDTH - LINE_HEIGHT / 2, 0xFF, 0x00, 0xFF, 0xFF);
+					filledTrigonRGBA(renderer, (x + 1) * LINE_WIDTH, y * LINE_WIDTH, (x + 1) * LINE_WIDTH - LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, (x + 1) * LINE_WIDTH - LINE_HEIGHT / 2, y * LINE_WIDTH - LINE_HEIGHT / 2, 0xFF, 0x00, 0xFF, 0xFF);
+				}
+				else {
+					SDL_SetRenderDrawColor(renderer, 0x30, 0x30, 0x30, 0xFF);
+					SDL_RenderFillRect(renderer, &lrect);
+					filledTrigonRGBA(renderer, x * LINE_WIDTH, y * LINE_WIDTH, x * LINE_WIDTH + LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, x * LINE_WIDTH + LINE_HEIGHT / 2, y * LINE_WIDTH - LINE_HEIGHT / 2, 0x30, 0x30, 0x30, 0xFF);
+					filledTrigonRGBA(renderer, (x + 1) * LINE_WIDTH, y * LINE_WIDTH, (x + 1) * LINE_WIDTH - LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, (x + 1) * LINE_WIDTH - LINE_HEIGHT / 2, y * LINE_WIDTH - LINE_HEIGHT / 2, 0x30, 0x30, 0x30, 0xFF);
+				}
+			}
+	for (int x = 0; x <= SQUARES_X; x++)
+		for (int y = 0; y < SQUARES_Y; y++) {
+				SDL_Rect lrect = {x * LINE_WIDTH - LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, LINE_HEIGHT, LINE_WIDTH - LINE_HEIGHT};
+				if (currentPosition.verLineState(x, y)) {
+					SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0xFF, 0xFF);
+					SDL_RenderFillRect(renderer, &lrect);
+					filledTrigonRGBA(renderer, x * LINE_WIDTH, y * LINE_WIDTH, x * LINE_WIDTH + LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, x * LINE_WIDTH - LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, 0xFF, 0x00, 0xFF, 0xFF);
+					filledTrigonRGBA(renderer, x * LINE_WIDTH, (y + 1) * LINE_WIDTH, x * LINE_WIDTH + LINE_HEIGHT / 2, (y + 1) * LINE_WIDTH - LINE_HEIGHT / 2, x * LINE_WIDTH - LINE_HEIGHT / 2, (y + 1) * LINE_WIDTH - LINE_HEIGHT / 2, 0xFF, 0x00, 0xFF, 0xFF);
+				}
+				else {
+					SDL_SetRenderDrawColor(renderer, 0x30, 0x30, 0x30, 0xFF);
+					SDL_RenderFillRect(renderer, &lrect);
+					filledTrigonRGBA(renderer, x * LINE_WIDTH, y * LINE_WIDTH, x * LINE_WIDTH + LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, x * LINE_WIDTH - LINE_HEIGHT / 2, y * LINE_WIDTH + LINE_HEIGHT / 2, 0x30, 0x30, 0x30, 0xFF);
+					filledTrigonRGBA(renderer, x * LINE_WIDTH, (y + 1) * LINE_WIDTH, x * LINE_WIDTH + LINE_HEIGHT / 2, (y + 1) * LINE_WIDTH - LINE_HEIGHT / 2, x * LINE_WIDTH - LINE_HEIGHT / 2, (y + 1) * LINE_WIDTH - LINE_HEIGHT / 2, 0x30, 0x30, 0x30, 0xFF);
+				}
+			}
 	SDL_RenderPresent(renderer);
 }
 
@@ -100,24 +143,6 @@ void SquareApp::OnEvent(SDL_Event* Event) {
 
 void SquareApp::KeyPress(SDL_Keysym keyp) {
 	switch (keyp.sym) {
-		case SDLK_b:
-			if (keyp.mod & KMOD_SHIFT)
-				blueval = 0xFF;
-			else
-				blueval = 0;
-			break;
-		case SDLK_r:
-			if (keyp.mod & KMOD_SHIFT)
-				redval = 0xFF;
-			else
-				redval = 0;
-			break;
-		case SDLK_g:
-			if (keyp.mod & KMOD_SHIFT)
-				greenval = 0xFF;
-			else
-				greenval = 0;
-			break;
 		case SDLK_q:
 			running = false;
 			break;
@@ -135,13 +160,27 @@ void SquareApp::OnCleanup() {
 	SDL_DestroyRenderer(renderer);
 	renderer = NULL;
 	window = NULL;
-	IMG_Quit();
 	SDL_Quit();
 	assert(running == false);
 	std::cout << "Did not segfault (this time)." << std::endl;
 }
 
 Move SquareApp::proposeMove() {
-	Move mv = {(horverDistribution(generator) ? Orientation::HORIZONAL : Orientation::VERTICAL), xDistribution(generator), yDistribution(generator)};
+	Player curpla = currentPosition.CurrentPlayer();
+	int cscore = currentPosition.score(curpla);
+	Move mv;
+	for (int x = 0; x < SQUARES_X; x++)
+		for (int y = 0; y <= SQUARES_Y; y++) {
+			mv = {Orientation::HORIZONAL, x, y,};
+			if (currentPosition.moveResult(mv).score(curpla) > cscore)
+				return mv;
+		}
+	for (int x = 0; x <= SQUARES_X; x++)
+		for (int y = 0; y < SQUARES_Y; y++) {
+			mv = {Orientation::VERTICAL, x, y};
+			if (currentPosition.moveResult(mv).score(curpla) > cscore)
+				return mv;
+		}
+	mv = {(horverDistribution(generator) ? Orientation::HORIZONAL : Orientation::VERTICAL), xDistribution(generator), yDistribution(generator)};
 	return mv;
 }
