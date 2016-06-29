@@ -20,7 +20,6 @@ Board::Board() {
 		for (int y = 0; y < SQUARES_Y; y++)
 			squares[x][y] = Player::NONE;
 	}
-	currentPlayer = Player::ONE;
 }
 
 Board::~Board() {
@@ -53,11 +52,10 @@ Board::Board(const Board& other) {
 		squares[x] = new Player[SQUARES_Y];
 		for (int y = 0; y < SQUARES_Y; y++) {
 			squares[x][y] = other.squares[x][y];
-			std::cout << (int)squares[x][y];
 		}
 	}
-	std::cout << std::endl;
 	currentPlayer = other.currentPlayer;
+	turnNumber = other.turnNumber;
 }
 
 Board& Board::operator=(const Board& other) {
@@ -90,6 +88,7 @@ Board& Board::operator=(const Board& other) {
 				squares[x][y] = other.squares[x][y];
 		}
 		currentPlayer = other.currentPlayer;
+		turnNumber = other.turnNumber;
 	}
 	return *this;
 }
@@ -124,6 +123,7 @@ int Board::score(Player player) {
 Board Board::moveResult(Move move) {
 	Board nb = *this;
 	nb.currentPlayer = NEXT_PLAYER(currentPlayer);
+	nb.turnNumber++;
 	
 	try {
 		if (move.x < 0 || move.y < 0)

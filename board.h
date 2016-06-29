@@ -22,6 +22,7 @@ enum class Orientation : uint8_t {
 	VERTICAL
 };
 
+/// @brief Holds a move
 struct Move {
 	Orientation orientation;
 	int x;
@@ -40,7 +41,11 @@ class Board {
 		/// @brief Who owns a specific square
 		Player** squares;
 
+		/// @brief The player whose turn it is
 		Player currentPlayer = Player::ONE;
+
+		/// @brief Stores number of turns
+		unsigned int turnNumber = 0;
 
 	public:
 		/// @brief Basic constructor
@@ -99,8 +104,18 @@ class Board {
 		/// @return New Board in state of new move
 		Board moveResult(Move move);
 
+		/// @brief Expose the current player without allowing its modification
+		///
+		/// @return The current player
 		inline Player CurrentPlayer() {
 			return currentPlayer;
+		}
+
+		/// @brief Expose the current turn number
+		///
+		/// @return The current number of turns
+		inline unsigned int turns() {
+			return turnNumber;
 		}
 
 };

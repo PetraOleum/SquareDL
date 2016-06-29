@@ -67,8 +67,8 @@ void SquareApp::OnLoop() {
 	Move mv = proposeMove();
 	std::cout << (int)currentPosition.CurrentPlayer() << ": " << (int)mv.orientation << "; " << mv.x << "; " << mv.y << std::endl;
 	currentPosition = currentPosition.moveResult(mv);
-	std::cout << (int)currentPosition.CurrentPlayer() << std::endl;
 	std::cout << "Score: " << currentPosition.score(Player::ONE) << " / " << currentPosition.score(Player::TWO) << " (" << currentPosition.score(Player::NONE) << ")" << std::endl;
+	std::cout << "Turn: " << currentPosition.turns() << std::endl;
 }
 
 /// @brief Renderer
