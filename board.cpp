@@ -93,25 +93,25 @@ Board& Board::operator=(const Board& other) {
 	return *this;
 }
 
-Player Board::squareState(int x, int y) {
+Player Board::squareState(int x, int y) const {
 	if ((x >= SQUARES_X) || (x < 0) || (y >= SQUARES_Y) || (y < 0))
 		throw std::out_of_range("Not a valid square");
 	return squares[x][y];
 }
 
-bool Board::horLineState(int x, int y) {
+bool Board::horLineState(int x, int y) const {
 	if ((x >= SQUARES_X) || (x < 0) || (y > SQUARES_Y) || (y < 0))
 		throw std::out_of_range("Not a valid square");
 	return horizontalLines[x][y];
 }
 
-bool Board::verLineState(int x, int y) {
+bool Board::verLineState(int x, int y) const {
 	if ((x > SQUARES_X) || (x < 0) || (y >= SQUARES_Y) || (y < 0))
 		throw std::out_of_range("Not a valid square");
 	return verticalLines[x][y];
 }
 
-int Board::score(Player player) {
+int Board::score(Player player) const {
 	int sc = 0;
 	for (int x = 0; x < SQUARES_X; x++)
 		for (int y = 0; y < SQUARES_Y; y++)
@@ -120,7 +120,7 @@ int Board::score(Player player) {
 	return sc;
 }
 
-Board Board::moveResult(Move move) {
+Board Board::moveResult(Move move) const {
 	Board nb = *this;
 	nb.currentPlayer = NEXT_PLAYER(currentPlayer);
 	nb.turnNumber++;
@@ -172,4 +172,32 @@ Board Board::moveResult(Move move) {
 	}
 //	std::cout << (int)nb.currentPlayer - (int)currentPlayer << std::endl;
 	return nb;
+}
+
+bool Board::legalMove(Move move) const {
+	// Test if the move is actually in range
+	if (move.x < 0 || move.y < 0)
+		return false;
+	if (move.x > SQUARES_X || move.y > SQUARES_Y)
+		return false;
+	if (move.orientation != Orientation::VERTICAL && move.x == SQUARES_X)
+		return false;
+	if (move.orientation != Orientation::HORIZONAL && move.y == SQUARES_Y)
+		return false;
+
+	// Test if the orientation is valid
+	if (move.orientation != Orientation::VERTICAL && move.orientation != Orientation::HORIZONAL)
+		return false;
+
+	// Test if that move has already been made
+	if (move.orientation == Orientation::HORIZONAL)
+		if (horizontalLines[move.x][move.y])
+			return false;
+	if (move.orientation == Orientation::VERTICAL)
+		if (verticalLines[move.x][move.y])
+			return false;
+
+	// If reached this far, must be legal
+	return true;
+	
 }

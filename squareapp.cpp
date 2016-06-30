@@ -3,6 +3,7 @@
 #include <cassert>
 #include <ctime>
 #include <algorithm>
+#include "ai.h"
 
 /// @brief Constructor - currently only sets running to true
 SquareApp::SquareApp() {
@@ -257,23 +258,24 @@ void SquareApp::OnCleanup() {
 }
 
 Move SquareApp::proposeMove() {
-	Player curpla = currentPosition.CurrentPlayer();
-	int cscore = currentPosition.score(curpla);
-	Move mv;
-	for (int x = 0; x < SQUARES_X; x++)
-		for (int y = 0; y <= SQUARES_Y; y++) {
-			mv = {Orientation::HORIZONAL, x, y,};
-			if (currentPosition.moveResult(mv).score(curpla) > cscore)
-				return mv;
-		}
-	for (int x = 0; x <= SQUARES_X; x++)
-		for (int y = 0; y < SQUARES_Y; y++) {
-			mv = {Orientation::VERTICAL, x, y};
-			if (currentPosition.moveResult(mv).score(curpla) > cscore)
-				return mv;
-		}
-	mv = {(horverDistribution(generator) ? Orientation::HORIZONAL : Orientation::VERTICAL), xDistribution(generator), yDistribution(generator)};
-	return mv;
+//	Player curpla = currentPosition.CurrentPlayer();
+//	int cscore = currentPosition.score(curpla);
+//	Move mv;
+//	for (int x = 0; x < SQUARES_X; x++)
+//		for (int y = 0; y <= SQUARES_Y; y++) {
+//			mv = {Orientation::HORIZONAL, x, y,};
+//			if (currentPosition.moveResult(mv).score(curpla) > cscore)
+//				return mv;
+//		}
+//	for (int x = 0; x <= SQUARES_X; x++)
+//		for (int y = 0; y < SQUARES_Y; y++) {
+//			mv = {Orientation::VERTICAL, x, y};
+//			if (currentPosition.moveResult(mv).score(curpla) > cscore)
+//				return mv;
+//		}
+//	mv = {(horverDistribution(generator) ? Orientation::HORIZONAL : Orientation::VERTICAL), xDistribution(generator), yDistribution(generator)};
+//	return mv;
+	return calculateBestMove(currentPosition, 1).move;
 }
 
 Move SquareApp::humanMove(SDL_Event* e) {
