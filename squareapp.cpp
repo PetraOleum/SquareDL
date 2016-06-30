@@ -238,6 +238,9 @@ void SquareApp::KeyPress(SDL_Keysym keyp) {
 		case SDLK_q:
 			running = false;
 			break;
+		case SDLK_r:
+			currentPosition = Board();
+			break;
 		default:
 			break;
 	}
