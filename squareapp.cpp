@@ -45,7 +45,7 @@ bool SquareApp::OnInit() {
 		std::cout << "Error in initialising! SDL error: " << SDL_GetError() << std::endl;
 		return false;
 	}
-	window = SDL_CreateWindow("SDL test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow("SDL test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	if (window == NULL) {
 		std::cout << "Window could not be created! SDL error: " << SDL_GetError() << std::endl;
 		return false;
@@ -240,6 +240,13 @@ void SquareApp::KeyPress(SDL_Keysym keyp) {
 			break;
 		case SDLK_r:
 			currentPosition = Board();
+			break;
+		case SDLK_F11:
+			if (fullscreen)
+				SDL_SetWindowFullscreen(window, 0);
+			else
+				SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+			fullscreen = !fullscreen;
 			break;
 		default:
 			break;

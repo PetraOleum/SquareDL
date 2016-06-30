@@ -30,6 +30,9 @@ class SquareApp {
 		/// @brief Is the mouse dragging?
 		bool mouseDragging = false;
 
+		/// @brief Fullscreen or not
+		bool fullscreen = false;
+
 		/// @brief Start x-coord of a mouse drag
 		int mdsx = 0;
 		
