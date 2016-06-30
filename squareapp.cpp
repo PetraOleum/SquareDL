@@ -64,6 +64,7 @@ bool SquareApp::OnInit() {
 /// @brief Code for action during loop
 void SquareApp::OnLoop() {
 	while (currentPosition.CurrentPlayer() == Player::TWO && currentPosition.score(Player::NONE) > 0) {
+		std::cout << "Thinking..." << std::endl;
 		Move mv = proposeMove();
 		std::cout << (int)currentPosition.CurrentPlayer() << ": " << (int)mv.orientation << "; " << mv.x << "; " << mv.y << std::endl;
 		currentPosition = currentPosition.moveResult(mv);
@@ -247,7 +248,10 @@ void SquareApp::KeyPress(SDL_Keysym keyp) {
 			else
 				SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 			fullscreen = !fullscreen;
+			centreInWindow();
 			break;
+		case SDLK_c:
+			centreInWindow();
 		default:
 			break;
 	}
@@ -311,4 +315,11 @@ Move SquareApp::humanMove(SDL_Event* e) {
 		return {Orientation::HORIZONAL, sx, sy + 1};
 
 
+}
+
+void SquareApp::centreInWindow() {
+	int wx, wy;
+	SDL_GetWindowSize(window, &wx, &wy);
+	xOffset = (wx / 2) - (LINE_WIDTH * SQUARES_X) / 2;
+	yOffset = (wy / 2) - (LINE_WIDTH * SQUARES_Y) / 2;
 }

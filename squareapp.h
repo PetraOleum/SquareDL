@@ -33,6 +33,9 @@ class SquareApp {
 		/// @brief Fullscreen or not
 		bool fullscreen = false;
 
+		/// @brief Centre the grid in the window
+		void centreInWindow();
+
 		/// @brief Start x-coord of a mouse drag
 		int mdsx = 0;
 		

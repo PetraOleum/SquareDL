@@ -21,19 +21,24 @@ AnalysedMove calculateBestMove(const Board& position, int depth) {
 		}
 	if (legals.empty())
 		return {{Orientation::VERTICAL, -1, -1}, myScore, otherScore, false};
+	bool isMoveThatClaims = false;
 	for (Move mv : legals) {
 		Board npos = position.moveResult(mv);
 		int nms = npos.score(myPlayer);
 		AnalysedMove amv;
 		if (depth > 0) {
 			if (nms == myScore) {
+				if (isMoveThatClaims)
+					continue;
 				amv = calculateBestMove(npos, depth - 1);
 				int ts = amv.otherPlayerScore;
 				amv.otherPlayerScore = amv.curPlayerScore;
 				amv.curPlayerScore = ts;
 			}
-			else
+			else {
 				amv = calculateBestMove(npos, depth);
+				isMoveThatClaims = true;
+			}
 			amv.move = mv;
 		}
 		else {
